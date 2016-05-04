@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="Y5sCdN" name="IpcTest" projectType="guiapp" version="1.0.0"
+              bundleIdentifier="com.ArtAndLogic.IpcTest" includeBinaryInAppConfig="1"
+              jucerVersion="4.0.2" companyName="Art &amp; Logic" companyWebsite="http://www.artandlogic.com"
+              companyEmail="info@artandlogic.com">
+  <MAINGROUP id="ArZhdz" name="IpcTest">
+    <GROUP id="{1134EF2E-C9D4-BE97-9538-29A2B5A53593}" name="Source">
+      <GROUP id="{4FF22127-7CC5-1DDF-4013-D39DB940961A}" name="UI">
+        <FILE id="Gl99T2" name="ModeSelect.cpp" compile="1" resource="0" file="Source/UI/ModeSelect.cpp"/>
+        <FILE id="LKR2dq" name="ModeSelect.h" compile="0" resource="0" file="Source/UI/ModeSelect.h"/>
+      </GROUP>
+      <FILE id="KG5t1j" name="PendingCalls.cpp" compile="1" resource="0"
+            file="Source/PendingCalls.cpp"/>
+      <FILE id="lUI8Nv" name="PendingCalls.h" compile="0" resource="0" file="Source/PendingCalls.h"/>
+      <FILE id="nuOiG1" name="IpcMessage.cpp" compile="1" resource="0" file="Source/IpcMessage.cpp"/>
+      <FILE id="P1oamf" name="IpcMessage.h" compile="0" resource="0" file="Source/IpcMessage.h"/>
+      <FILE id="hP6762" name="Controller.cpp" compile="1" resource="0" file="Source/Controller.cpp"/>
+      <FILE id="jhCoBa" name="Controller.h" compile="0" resource="0" file="Source/Controller.h"/>
+      <FILE id="ufjWPn" name="IpcClient.cpp" compile="1" resource="0" file="Source/IpcClient.cpp"/>
+      <FILE id="UC9oQY" name="IpcClient.h" compile="0" resource="0" file="Source/IpcClient.h"/>
+      <FILE id="XvRx5i" name="IpcServer.cpp" compile="1" resource="0" file="Source/IpcServer.cpp"/>
+      <FILE id="zYCUqK" name="IpcServer.h" compile="0" resource="0" file="Source/IpcServer.h"/>
+      <FILE id="HP4eLi" name="MainComponent.cpp" compile="1" resource="0"
+            file="Source/MainComponent.cpp"/>
+      <FILE id="iXKuJV" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="g85kU6" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+    </GROUP>
+  </MAINGROUP>
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       isDebug="1" optimisation="1" targetName="IpcTest"/>
+        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       isDebug="0" optimisation="3" targetName="IpcTest"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+    <VS2013 targetFolder="Builds/VisualStudio2013">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="1" optimisation="1" targetName="IpcTest"/>
+        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="0" optimisation="3" targetName="IpcTest"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2013>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="1"/>
+  </MODULES>
+  <JUCEOPTIONS/>
+</JUCERPROJECT>
