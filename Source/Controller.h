@@ -74,6 +74,12 @@ public:
    virtual String StringFn(const String& inString) = 0;
 
 
+   /**
+    * The Controller has two ValueTree objects; request one by index, and 
+    * operate on it directly.
+    * @param  index Index (0/1) of the tree you'd like to work with
+    * @return       ValueTree object.
+    */
    ValueTree GetTree(int index);
 
 
@@ -109,6 +115,15 @@ public:
   ~ClientController();
 
 
+  /**
+   * Attempt to establish a connection to a server at a specified domain 
+   * name or IP address.
+   * @param  hostName   Name or IP address to connect to
+   * @param  portNumber Port number
+   * @param  msTimeout  Number of milliseconds to wait for a successful 
+   *                    connection.
+   * @return            True if we connected.
+   */
   bool ConnectToServer(const String& hostName, int portNumber, int msTimeout);
 
   /**
@@ -155,6 +170,15 @@ public:
    }
 private:
 
+  /**
+   * Perform a function call across the socket connection. 
+   * @param  call     Populated IpcMessage object containing message sequence, 
+   *                  function code, and optional block of parameter data
+   * @param  response IcpMessage object that will be populated on 
+   *                  exit with the contents of the response from the server
+   * @return          True if the call completed successfully. False if the
+   *                  server timed out or there was some other error.
+   */
   bool CallFunction(IpcMessage& call, IpcMessage& response);
 
   bool UpdateValueTree(int index, const void* data, size_t size);
