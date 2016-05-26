@@ -1,12 +1,6 @@
 /*
-  ==============================================================================
-
-    Controller.h
-    Created: 29 Jan 2016 4:50:08pm
-    Author:  Brett Porter
-
-  ==============================================================================
-*/
+  Copyright 2016 Art & Logic Software Development. 
+ */
 
 #ifndef CONTROLLER_H_INCLUDED
 #define CONTROLLER_H_INCLUDED

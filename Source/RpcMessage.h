@@ -1,12 +1,8 @@
 /*
-  ==============================================================================
+  Copyright 2016 Art & Logic Software Development. 
+ */
 
-    RpcMessage.h
-    Created: 1 Feb 2016 11:06:54am
-    Author:  Brett Porter
 
-  ==============================================================================
-*/
 
 #ifndef IPCMESSAGE_H_INCLUDED
 #define IPCMESSAGE_H_INCLUDED

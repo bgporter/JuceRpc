@@ -1,12 +1,8 @@
 /*
-  ==============================================================================
+  Copyright 2016 Art & Logic Software Development. 
+ */
 
-    RpcClient.h
-    Created: 29 Jan 2016 4:43:23pm
-    Author:  Brett Porter
 
-  ==============================================================================
-*/
 
 #ifndef IPCCLIENT_H_INCLUDED
 #define IPCCLIENT_H_INCLUDED

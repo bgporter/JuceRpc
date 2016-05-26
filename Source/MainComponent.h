@@ -1,10 +1,8 @@
 /*
-  ==============================================================================
+  Copyright 2016 Art & Logic Software Development. 
+ */
 
-    This file was auto-generated!
 
-  ==============================================================================
-*/
 
 #ifndef MAINCOMPONENT_H_INCLUDED
 #define MAINCOMPONENT_H_INCLUDED

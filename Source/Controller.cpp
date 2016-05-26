@@ -1,12 +1,8 @@
 /*
-  ==============================================================================
+  Copyright 2016 Art & Logic Software Development. 
+ */
 
-    Controller.cpp
-    Created: 29 Jan 2016 4:50:08pm
-    Author:  Brett Porter
 
-  ==============================================================================
-*/
 
 #include "Controller.h"
 

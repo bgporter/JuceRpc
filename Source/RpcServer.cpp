@@ -1,12 +1,8 @@
 /*
-  ==============================================================================
+  Copyright 2016 Art & Logic Software Development. 
+ */
 
-    RpcServer.cpp
-    Created: 29 Jan 2016 4:43:02pm
-    Author:  Brett Porter
 
-  ==============================================================================
-*/
 
 #include "RpcTest.h"
 

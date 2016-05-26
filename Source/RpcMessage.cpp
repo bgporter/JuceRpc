@@ -1,12 +1,8 @@
 /*
-  ==============================================================================
+  Copyright 2016 Art & Logic Software Development. 
+ */
 
-    RpcMessage.cpp
-    Created: 1 Feb 2016 11:06:54am
-    Author:  Brett Porter
 
-  ==============================================================================
-*/
 
 #include "RpcMessage.h"
 

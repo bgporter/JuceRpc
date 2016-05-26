@@ -1,12 +1,8 @@
 /*
-  ==============================================================================
+  Copyright 2016 Art & Logic Software Development. 
+ */
 
-    PendingCalls.cpp
-    Created: 2 Feb 2016 4:28:43pm
-    Author:  Brett Porter
 
-  ==============================================================================
-*/
 
 #include "PendingCalls.h"
 

@@ -1,12 +1,8 @@
 /*
-  ==============================================================================
+  Copyright 2016 Art & Logic Software Development. 
+ */
 
-    RpcClient.cpp
-    Created: 29 Jan 2016 4:43:23pm
-    Author:  Brett Porter
 
-  ==============================================================================
-*/
 
 
 #include "RpcTest.h"
