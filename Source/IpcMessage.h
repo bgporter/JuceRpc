@@ -90,6 +90,11 @@ public:
    bool GetMetadata(uint32& code, uint32& sequence);
 
 
+   /**
+    * Add some data bytes to the end of our block.
+    * @param data     Pointer to the new data
+    * @param numBytes Length of data to be added.
+    */
    void AppendData(const void* data, size_t numBytes);
    
    template <typename T>
