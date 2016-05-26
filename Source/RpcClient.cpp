@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    IpcClient.cpp
+    RpcClient.cpp
     Created: 29 Jan 2016 4:43:23pm
     Author:  Brett Porter
 
@@ -9,41 +9,41 @@
 */
 
 
-#include "IpcTest.h"
-#include "IpcClient.h"
+#include "RpcTest.h"
+#include "RpcClient.h"
 
 
 #include "Controller.h"
 
-IpcClient::IpcClient()
+RpcClient::RpcClient()
 :  InterprocessConnection(false, 0xf2b49e2c)
 ,  fController(nullptr)
 {
 
 }
 
-IpcClient::~IpcClient()
+RpcClient::~RpcClient()
 {
 
 }
 
-void IpcClient::SetController(ClientController* controller)
+void RpcClient::SetController(ClientController* controller)
 {
    fController = controller;
 }
 
 
-void IpcClient::connectionMade()
+void RpcClient::connectionMade()
 {
-   DBG("IpcClient::connectionMade()");
+   DBG("RpcClient::connectionMade()");
 }
 
-void IpcClient::connectionLost()
+void RpcClient::connectionLost()
 {
-   DBG("IpcClient::connectionLost()");
+   DBG("RpcClient::connectionLost()");
 }
 
-void IpcClient::messageReceived(const MemoryBlock& message)
+void RpcClient::messageReceived(const MemoryBlock& message)
 {
    if (nullptr != fController)
    {

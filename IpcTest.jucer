@@ -10,17 +10,18 @@
         <FILE id="Gl99T2" name="ModeSelect.cpp" compile="1" resource="0" file="Source/UI/ModeSelect.cpp"/>
         <FILE id="LKR2dq" name="ModeSelect.h" compile="0" resource="0" file="Source/UI/ModeSelect.h"/>
       </GROUP>
+      <FILE id="EqwTvV" name="RpcClient.cpp" compile="1" resource="0" file="Source/RpcClient.cpp"/>
+      <FILE id="yxWolD" name="RpcClient.h" compile="0" resource="0" file="Source/RpcClient.h"/>
+      <FILE id="GhC5Jr" name="RpcMessage.cpp" compile="1" resource="0" file="Source/RpcMessage.cpp"/>
+      <FILE id="DbnBv7" name="RpcMessage.h" compile="0" resource="0" file="Source/RpcMessage.h"/>
+      <FILE id="MIX1yv" name="RpcServer.cpp" compile="1" resource="0" file="Source/RpcServer.cpp"/>
+      <FILE id="gkVq5c" name="RpcServer.h" compile="0" resource="0" file="Source/RpcServer.h"/>
+      <FILE id="ZuvLb5" name="RpcTest.h" compile="0" resource="0" file="Source/RpcTest.h"/>
       <FILE id="KG5t1j" name="PendingCalls.cpp" compile="1" resource="0"
             file="Source/PendingCalls.cpp"/>
       <FILE id="lUI8Nv" name="PendingCalls.h" compile="0" resource="0" file="Source/PendingCalls.h"/>
-      <FILE id="nuOiG1" name="IpcMessage.cpp" compile="1" resource="0" file="Source/IpcMessage.cpp"/>
-      <FILE id="P1oamf" name="IpcMessage.h" compile="0" resource="0" file="Source/IpcMessage.h"/>
       <FILE id="hP6762" name="Controller.cpp" compile="1" resource="0" file="Source/Controller.cpp"/>
       <FILE id="jhCoBa" name="Controller.h" compile="0" resource="0" file="Source/Controller.h"/>
-      <FILE id="ufjWPn" name="IpcClient.cpp" compile="1" resource="0" file="Source/IpcClient.cpp"/>
-      <FILE id="UC9oQY" name="IpcClient.h" compile="0" resource="0" file="Source/IpcClient.h"/>
-      <FILE id="XvRx5i" name="IpcServer.cpp" compile="1" resource="0" file="Source/IpcServer.cpp"/>
-      <FILE id="zYCUqK" name="IpcServer.h" compile="0" resource="0" file="Source/IpcServer.h"/>
       <FILE id="HP4eLi" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="iXKuJV" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>

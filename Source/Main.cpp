@@ -12,9 +12,9 @@
 #include "MainComponent.h"
 
 #include "Controller.h"
-#include "IpcClient.h"
-#include "IpcServer.h"
-#include "IpcTest.h"
+#include "RpcClient.h"
+#include "RpcServer.h"
+#include "RpcTest.h"
 
 
 #include "UI/ModeSelect.h"
@@ -23,11 +23,11 @@
 
 
 //==============================================================================
-class IpcTestApplication  : public JUCEApplication
+class RpcTestApplication  : public JUCEApplication
 {
 public:
     //==============================================================================
-    IpcTestApplication() {}
+    RpcTestApplication() {}
 
     const String getApplicationName() override       { return ProjectInfo::projectName; }
     const String getApplicationVersion() override    { return ProjectInfo::versionString; }
@@ -52,14 +52,14 @@ public:
             mainWindow->SetText("SERVER");
             ServerController* c = new ServerController();
             mainWindow->SetController(c);
-            fIpcServer = new IpcServer(c);
+            fRpcServer = new RpcServer(c);
             this->RunServer();
         }
         else
         {
             // client mode.
             mainWindow->SetText("client");
-            IpcClient* ipc = new IpcClient();
+            RpcClient* ipc = new RpcClient();
             fClientController = new ClientController(ipc);
             mainWindow->SetController(fClientController);
             this->RunClient();
@@ -73,9 +73,9 @@ public:
     {
         DBG("Launching Server thread.");
 #ifdef qUseNamedPipe
-        fIpcServer->
+        fRpcServer->
 #else        
-        fIpcServer->beginWaitingForSocket(kPortNumber);
+        fRpcServer->beginWaitingForSocket(kPortNumber);
 #endif    
     }
 
@@ -107,10 +107,10 @@ public:
     void shutdown() override
     {
         // Add your application's shutdown code here..
-        if (nullptr != fIpcServer)
+        if (nullptr != fRpcServer)
         {
-            fIpcServer->stop();
-            fIpcServer = nullptr;
+            fRpcServer->stop();
+            fRpcServer = nullptr;
         }
         mainWindow = nullptr; // (deletes our window)
     }
@@ -202,9 +202,9 @@ private:
     ScopedPointer<ClientController> fClientController;
 
     // if we're running in server mode.
-    ScopedPointer<IpcServer>    fIpcServer;
+    ScopedPointer<RpcServer>    fRpcServer;
 };
 
 //==============================================================================
 // This macro generates the main() routine that launches the app.
-START_JUCE_APPLICATION (IpcTestApplication)
+START_JUCE_APPLICATION (RpcTestApplication)

@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    IpcClient.h
+    RpcClient.h
     Created: 29 Jan 2016 4:43:23pm
     Author:  Brett Porter
 
@@ -16,12 +16,12 @@
 
 class ClientController;
 
-class IpcClient : public InterprocessConnection
+class RpcClient : public InterprocessConnection
 {
 public:
-   IpcClient();
+   RpcClient();
 
-   ~IpcClient();
+   ~RpcClient();
 
    void SetController(ClientController* controller);
 

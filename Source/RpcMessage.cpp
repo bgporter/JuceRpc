@@ -1,14 +1,14 @@
 /*
   ==============================================================================
 
-    IpcMessage.cpp
+    RpcMessage.cpp
     Created: 1 Feb 2016 11:06:54am
     Author:  Brett Porter
 
   ==============================================================================
 */
 
-#include "IpcMessage.h"
+#include "RpcMessage.h"
 
 
 namespace
@@ -18,7 +18,7 @@ namespace
 
 
 template <>
-void IpcMessage::SetTreeProperty<String>(const String& path, DataType type, String val)
+void RpcMessage::SetTreeProperty<String>(const String& path, DataType type, String val)
 {
    this->AppendString(path);
    this->AppendData<int>(type);
@@ -26,10 +26,10 @@ void IpcMessage::SetTreeProperty<String>(const String& path, DataType type, Stri
 
 }
 
-class IpcValueTreeSync : public ValueTreeSynchroniser
+class RpcValueTreeSync : public ValueTreeSynchroniser
 {
 public:
-   IpcValueTreeSync(IpcMessage* msg, const ValueTree& tree)
+   RpcValueTreeSync(RpcMessage* msg, const ValueTree& tree)
    :  ValueTreeSynchroniser(tree)
    ,  fMessage(msg)
    {
@@ -48,41 +48,41 @@ public:
 
 
 private:
-   IpcMessage* fMessage;
+   RpcMessage* fMessage;
 
 };
 
 
 
 
-IpcMessage::IpcMessage(uint32 code, uint32 sequence)
+RpcMessage::RpcMessage(uint32 code, uint32 sequence)
 :  fNextOffset(0)
 {
    this->AppendData<uint32>(code); 
-   this->AppendData<uint32>(IpcMessage::GetSequence(sequence));
+   this->AppendData<uint32>(RpcMessage::GetSequence(sequence));
 }
 
 
-IpcMessage::IpcMessage(const MemoryBlock& message)
+RpcMessage::RpcMessage(const MemoryBlock& message)
 {
    this->FromMemoryBlock(message);
 
 }
 
-IpcMessage::~IpcMessage()
+RpcMessage::~RpcMessage()
 {
 
 }
 
 
-void IpcMessage::FromMemoryBlock(const MemoryBlock& message)
+void RpcMessage::FromMemoryBlock(const MemoryBlock& message)
 {
    fData = message;
    fNextOffset = 0;
 }
 
 
-bool IpcMessage::GetMetadata(uint32& code, uint32& sequence)
+bool RpcMessage::GetMetadata(uint32& code, uint32& sequence)
 {
    bool retval = false;
    fNextOffset = 0;
@@ -96,14 +96,14 @@ bool IpcMessage::GetMetadata(uint32& code, uint32& sequence)
 }
 
 
-void IpcMessage::AppendData(const void* data, size_t numBytes)
+void RpcMessage::AppendData(const void* data, size_t numBytes)
 {
    fData.append(data, numBytes);
 }
 
 
 
-void IpcMessage::AppendVar(var value)
+void RpcMessage::AppendVar(var value)
 {
    if (value.isInt())
    {
@@ -139,7 +139,7 @@ void IpcMessage::AppendVar(var value)
    }
 }
 
-void IpcMessage::AppendString(const String& s)
+void RpcMessage::AppendString(const String& s)
 {
    const char* p = s.toRawUTF8();
    // getBytesRequiredFor() does *not* include the trailing NULL.
@@ -149,23 +149,23 @@ void IpcMessage::AppendString(const String& s)
 }
 
 
-void IpcMessage::AppendValueTree(const ValueTree& tree)
+void RpcMessage::AppendValueTree(const ValueTree& tree)
 {
-   IpcValueTreeSync sync(this, tree);
+   RpcValueTreeSync sync(this, tree);
    sync.GetTreeData();
 }
 
 /*
-void IpcMessage::SetTreePropertyString(const String& path, const String& val)
+void RpcMessage::SetTreePropertyString(const String& path, const String& val)
 {
    this->AppendString(path);
-   this->AppendData<int>(IpcMessage::kString);
+   this->AppendData<int>(RpcMessage::kString);
    this->AppendString(val);
 }
 */
 
 
-var IpcMessage::GetVar(size_t offset)
+var RpcMessage::GetVar(size_t offset)
 {
    DataType type = static_cast<DataType>(this->GetData<int>(offset));
    var retval;
@@ -211,7 +211,7 @@ var IpcMessage::GetVar(size_t offset)
    return retval;
 }
 
-String IpcMessage::GetString(size_t offset)
+String RpcMessage::GetString(size_t offset)
 {
    void* p = this->GetDataPointer(offset);
    const char* s = static_cast<const char*>(p);
@@ -222,8 +222,8 @@ String IpcMessage::GetString(size_t offset)
 }
 
 
-// void IpcMessage::GetValueTree(ValueTree& target, size_t offset)
-String IpcMessage::GetValueTree(ValueTree& target, size_t offset)
+// void RpcMessage::GetValueTree(ValueTree& target, size_t offset)
+String RpcMessage::GetValueTree(ValueTree& target, size_t offset)
 { 
    void* p = this->GetDataPointer(offset);
    size_t len = fData.getSize() - fNextOffset;
@@ -237,7 +237,7 @@ String IpcMessage::GetValueTree(ValueTree& target, size_t offset)
 }
 
 
-void IpcMessage::ResetData()
+void RpcMessage::ResetData()
 {
    uint32 code;
    uint32 sequence;
@@ -249,7 +249,7 @@ void IpcMessage::ResetData()
 
    if (sequence > 0)
    {
-       sequence = IpcMessage::GetSequence(kUseNextSequence);
+       sequence = RpcMessage::GetSequence(kUseNextSequence);
    }
    this->AppendData<uint32>(code);
    this->AppendData<uint32>(sequence);
@@ -257,7 +257,7 @@ void IpcMessage::ResetData()
 
 }
 
-void IpcMessage::ApplyTreeProperty(ValueTree root)
+void RpcMessage::ApplyTreeProperty(ValueTree root)
 {
    String path = this->GetString();
 
@@ -302,7 +302,7 @@ void IpcMessage::ApplyTreeProperty(ValueTree root)
    }
 }
 
-uint32 IpcMessage::GetSequence(uint32 sequence)
+uint32 RpcMessage::GetSequence(uint32 sequence)
 {
    if (kUseNextSequence == sequence)
    {
@@ -324,10 +324,10 @@ uint32 IpcMessage::GetSequence(uint32 sequence)
 
 
 
-class IpcMessageTest : public UnitTest
+class RpcMessageTest : public UnitTest
 {
 public:
-   IpcMessageTest() : UnitTest("IpcMessage Tests") {}
+   RpcMessageTest() : UnitTest("RpcMessage Tests") {}
 
    void runTest() override
    {
@@ -337,7 +337,7 @@ public:
       bool result;
 
       this->beginTest("Basic operation");
-      IpcMessage m1(1);
+      RpcMessage m1(1);
       result = m1.GetMetadata(code, sequence);
       this->expect(result);
       this->expect(1 == code);
@@ -351,7 +351,7 @@ public:
 
       this->beginTest("Serializing data");
 
-      IpcMessage m2(77);
+      RpcMessage m2(77);
       m2.GetMetadata(code, sequence);
       this->expect(3 == sequence);
       String s("malarkey");
@@ -372,7 +372,7 @@ public:
       this->beginTest("Init from MemoryBlock");
 
 
-      IpcMessage m3(m2.GetMemoryBlock());
+      RpcMessage m3(m2.GetMemoryBlock());
       m3.GetMetadata(code, sequence);
       this->expect(77 == code);
       this->expect(s == m3.GetString());
@@ -381,7 +381,7 @@ public:
       this->expect(-1 == m3.GetData<int>()); 
 
 
-      IpcMessage m4;
+      RpcMessage m4;
       m4.FromMemoryBlock(m2.GetMemoryBlock());
       m4.GetMetadata(code, sequence);
       this->expect(77 == code);
@@ -392,7 +392,7 @@ public:
 
 
       this->beginTest("ValueTree send");
-      IpcMessage m5;
+      RpcMessage m5;
       ValueTree tree("test1");
       tree.setProperty("foo", 1, nullptr);
       tree.setProperty("bar", "a string", nullptr);
@@ -412,8 +412,8 @@ public:
       this->beginTest("ValueTree change");
       ValueTree target;
 
-      IpcMessage m6(1000, 0);
-      IpcValueTreeSync sync1(&m6, tree);
+      RpcMessage m6(1000, 0);
+      RpcValueTreeSync sync1(&m6, tree);
       sync1.GetTreeData();
       m6.GetMetadata(code, sequence);
       m6.GetValueTree(target);
@@ -493,10 +493,10 @@ private:
 };
 
 
-class IpcMessageTest2 : public UnitTest
+class RpcMessageTest2 : public UnitTest
 {
 public:
-   IpcMessageTest2() : UnitTest("more IpcMessage Tests") {}
+   RpcMessageTest2() : UnitTest("more RpcMessage Tests") {}
 
 
    void CheckTrees(ValueTree& src, ValueTree& dest)
@@ -522,8 +522,8 @@ public:
       tree1.addChild(sub, -1, nullptr);
       DBG(tree1.toXmlString());      
 
-      IpcMessage m6(1000, 0);
-      IpcValueTreeSync sync1(&m6, tree1);
+      RpcMessage m6(1000, 0);
+      RpcValueTreeSync sync1(&m6, tree1);
       sync1.GetTreeData();
       uint32 code;
       uint32 sequence;
@@ -557,7 +557,7 @@ public:
 class DoubleValueTreeSync : public ValueTreeSynchroniser
 {
 public:
-   DoubleValueTreeSync(IpcMessage* msg, const ValueTree& src, ValueTree& target)
+   DoubleValueTreeSync(RpcMessage* msg, const ValueTree& src, ValueTree& target)
    :  ValueTreeSynchroniser(src)
    ,  fMessage(msg)
    ,  fTarget(target)
@@ -583,16 +583,16 @@ public:
 
 
 private:
-   IpcMessage* fMessage;
+   RpcMessage* fMessage;
    ValueTree&  fTarget;
 
 };
 
 
-class IpcMessageTest3 : public UnitTest
+class RpcMessageTest3 : public UnitTest
 {
 public:
-   IpcMessageTest3() : UnitTest("IpcMessage SetTreePropertyTests") {}
+   RpcMessageTest3() : UnitTest("RpcMessage SetTreePropertyTests") {}
 
 
    void CheckTrees(ValueTree& src, ValueTree& dest)
@@ -610,10 +610,10 @@ public:
       ValueTree clientTree("root");
 
       this->beginTest("Basic nested set property test");
-      IpcMessage m1(1000);
-      IpcMessage m2;
+      RpcMessage m1(1000);
+      RpcMessage m2;
 
-      m1.SetTreeProperty("intVal", IpcMessage::kInt, 1000);
+      m1.SetTreeProperty("intVal", RpcMessage::kInt, 1000);
 
       m2.FromMemoryBlock(m1.GetMemoryBlock());
       uint32 code, seq;
@@ -630,7 +630,7 @@ public:
       m2.ResetData();
 
       //m1.SetTreePropertyString("sub1/stringVal", "This is a test");
-      m1.SetTreeProperty("sub1/stringVal", IpcMessage::kString, String("This is a test"));
+      m1.SetTreeProperty("sub1/stringVal", RpcMessage::kString, String("This is a test"));
       m2.FromMemoryBlock(m1.GetMemoryBlock());
       m2.GetMetadata(code, seq);
 
@@ -644,7 +644,7 @@ public:
       m1.ResetData();
       m2.ResetData();
 
-      m1.SetTreeProperty("sub1/floatVal", IpcMessage::kDouble, 3.14159);
+      m1.SetTreeProperty("sub1/floatVal", RpcMessage::kDouble, 3.14159);
 
       m2.FromMemoryBlock(m1.GetMemoryBlock());
       m2.GetMetadata(code, seq);
@@ -659,7 +659,7 @@ public:
       m1.ResetData();
       m2.ResetData();
 
-      m1.SetTreeProperty("sub1/sub2/boolVal", IpcMessage::kBool, true);
+      m1.SetTreeProperty("sub1/sub2/boolVal", RpcMessage::kBool, true);
 
       m2.FromMemoryBlock(m1.GetMemoryBlock());
       m2.GetMetadata(code, seq);
@@ -675,7 +675,7 @@ public:
        
       m1.ResetData();
       m2.ResetData();
-      m1.SetTreeProperty("intVal", IpcMessage::kInt, -4);
+      m1.SetTreeProperty("intVal", RpcMessage::kInt, -4);
 
       m2.FromMemoryBlock(m1.GetMemoryBlock());
       m2.GetMetadata(code, seq);
@@ -690,7 +690,7 @@ public:
       m1.ResetData();
       m2.ResetData();
 
-      m1.SetTreeProperty("sub1/stringVal", IpcMessage::kString, String("This is a subsequent test"));
+      m1.SetTreeProperty("sub1/stringVal", RpcMessage::kString, String("This is a subsequent test"));
       m2.FromMemoryBlock(m1.GetMemoryBlock());
       m2.GetMetadata(code, seq);
 
@@ -704,7 +704,7 @@ public:
       m1.ResetData();
       m2.ResetData();
 
-      m1.SetTreeProperty("sub1/floatVal", IpcMessage::kDouble, 101.0);
+      m1.SetTreeProperty("sub1/floatVal", RpcMessage::kDouble, 101.0);
 
       m2.FromMemoryBlock(m1.GetMemoryBlock());
       m2.GetMetadata(code, seq);
@@ -719,7 +719,7 @@ public:
       m1.ResetData();
       m2.ResetData();
 
-      m1.SetTreeProperty("sub1/sub2/boolVal", IpcMessage::kBool, false);
+      m1.SetTreeProperty("sub1/sub2/boolVal", RpcMessage::kBool, false);
 
       m2.FromMemoryBlock(m1.GetMemoryBlock());
       m2.GetMetadata(code, seq);
@@ -735,15 +735,15 @@ public:
       ValueTree server2("root");
       ValueTree client2;
 
-      IpcMessage m3(2000);
+      RpcMessage m3(2000);
       DoubleValueTreeSync sync(&m3, server2, client2);
 
       sync.GetTreeData();
 
       this->CheckTrees(server2, client2);
 
-      IpcMessage m4(2000);
-      m4.SetTreeProperty("sub/txt", IpcMessage::kString, String("This is some text"));
+      RpcMessage m4(2000);
+      m4.SetTreeProperty("sub/txt", RpcMessage::kString, String("This is some text"));
       m4.GetMetadata(code, seq);
       // apply the set property against the server tree. This should 
       // cause the m3 sync message to contain the deltas 
@@ -760,10 +760,10 @@ public:
 };
 
 
-class IpcMessageTest4 : public UnitTest
+class RpcMessageTest4 : public UnitTest
 {
 public:
-   IpcMessageTest4() : UnitTest("IpcMessage get/set JUCE vars.") {}
+   RpcMessageTest4() : UnitTest("RpcMessage get/set JUCE vars.") {}
 
 
 
@@ -771,7 +771,7 @@ public:
    {
       this->beginTest("setting/getting vars...");
 
-      IpcMessage m1(1);
+      RpcMessage m1(1);
       int intVal = 201;
       int64 int64Val = -202020;
       bool boolVal = false;
@@ -779,7 +779,7 @@ public:
       String stringVal = "This is a string value!";
 
       m1.AppendVar(var(intVal));
-      IpcMessage resp;
+      RpcMessage resp;
 
       resp.FromMemoryBlock(m1.GetMemoryBlock());
       uint32 code;
@@ -798,9 +798,9 @@ public:
    }
 };
 
-static IpcMessageTest tests;
-static IpcMessageTest2 test2;
-static IpcMessageTest3 test3;
-static IpcMessageTest4 test4;
+static RpcMessageTest tests;
+static RpcMessageTest2 test2;
+static RpcMessageTest3 test3;
+static RpcMessageTest4 test4;
 
 

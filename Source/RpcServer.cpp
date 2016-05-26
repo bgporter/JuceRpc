@@ -1,32 +1,35 @@
 /*
   ==============================================================================
 
-    IpcServer.cpp
+    RpcServer.cpp
     Created: 29 Jan 2016 4:43:02pm
     Author:  Brett Porter
 
   ==============================================================================
 */
 
-#include "IpcTest.h"
+#include "RpcTest.h"
 
-#include "IpcServer.h"
-#include "IpcMessage.h"
+#include "RpcServer.h"
+#include "RpcMessage.h"
 
-
+#if 0
 namespace
 {
      ScopedPointer<FileLogger> logger = FileLogger::createDateStampedLogger(
-      "IpcTest",
+      "RpcTest",
       "Server_",
       ".txt",
       "*** SERVER ***");  
 };
 
+#endif
+
+
 class ValueTreeSyncServer : public ValueTreeSynchroniser
 {
 public:
-  ValueTreeSyncServer(ValueTree& tree, IpcServerConnection* ipcServer, uint32 code)
+  ValueTreeSyncServer(ValueTree& tree, RpcServerConnection* ipcServer, uint32 code)
   :   ValueTreeSynchroniser(tree)
   ,   fServer(ipcServer)
   ,   fMessageCode(code)
@@ -46,11 +49,10 @@ public:
      String delta = String("> ") + String::toHexString(change, size);
      DBG(delta);
 
-     logger->logMessage(delta);
-     IpcMessage msg(fMessageCode, fSequence);
+     RpcMessage msg(fMessageCode, fSequence);
      fSequence = 0;
      msg.AppendData(change, size);
-     fServer->SendIpcMessage(msg);
+     fServer->SendRpcMessage(msg);
   }
 
   uint32 GetMessageCode() const
@@ -60,9 +62,9 @@ public:
 
 private:
   /**
-   * We need the IpcServer to send messages back to our client.
+   * We need the RpcServer to send messages back to our client.
    */
-  IpcServerConnection* fServer;
+  RpcServerConnection* fServer;
 
   /**
    * Each ValueTree that's watched has its own message code 
@@ -77,19 +79,19 @@ private:
 };
 
 
-IpcServer::IpcServer(ServerController* controller)
+RpcServer::RpcServer(ServerController* controller)
 :  fController(controller)
 {
   this->startTimer(10 * 1000);
 
 }
 
-IpcServer::~IpcServer()
+RpcServer::~RpcServer()
 {
 
 }
 
-void IpcServer::timerCallback()
+void RpcServer::timerCallback()
 {
     // iterate through the connections -- if any of them are disconnected, delete them. 
     // NOTE that we iterate from the end to the front so we can delete items without
@@ -99,11 +101,11 @@ void IpcServer::timerCallback()
     {
       for (int i = (connectionListSize - 1); i >= 0; --i)
       {
-         // IpcServerConnection* ipc = dynamic_cast<IpcServerConnection*>(fConnections.getUnchecked(i));
-         IpcServerConnection* ipc = fConnections.getUnchecked(i);
+         // RpcServerConnection* ipc = dynamic_cast<RpcServerConnection*>(fConnections.getUnchecked(i));
+         RpcServerConnection* ipc = fConnections.getUnchecked(i);
          if (ipc)
          {
-            if (IpcServerConnection::kDisconnected == ipc->GetConnectionState())
+            if (RpcServerConnection::kDisconnected == ipc->GetConnectionState())
             {
                // this connection is no longer operative; delete it.
                fConnections.remove(i);
@@ -114,83 +116,83 @@ void IpcServer::timerCallback()
 }
 
 
-InterprocessConnection* IpcServer::createConnectionObject()
+InterprocessConnection* RpcServer::createConnectionObject()
 {
    // TODO: store into list, periodically delete disconnected connections.
-   IpcServerConnection* ipc = new IpcServerConnection(fController);
+   RpcServerConnection* ipc = new RpcServerConnection(fController);
    fConnections.add(ipc);
    return ipc;
 }
 
 
-IpcServerConnection::IpcServerConnection(ServerController* controller)
+RpcServerConnection::RpcServerConnection(ServerController* controller)
 :  InterprocessConnection(false, 0xf2b49e2c)
 ,  fController(controller)
-,  fConnected(IpcServerConnection::kConnecting)
+,  fConnected(RpcServerConnection::kConnecting)
 {
-  DBG("IpcServerConnection created." );
+  DBG("RpcServerConnection created." );
   MessageManagerLock mmLock;
   fController->addChangeListener(this);
 }
 
-IpcServerConnection::~IpcServerConnection()
+RpcServerConnection::~RpcServerConnection()
 {
-  DBG("IpcServerConnection destroyed." );
+  DBG("RpcServerConnection destroyed." );
 
 }
 
 
-void IpcServerConnection::connectionMade()
+void RpcServerConnection::connectionMade()
 {
-   DBG("IpcServerConnection::connectionMade()");
-   fConnected = IpcServerConnection::kConnected;
+   DBG("RpcServerConnection::connectionMade()");
+   fConnected = RpcServerConnection::kConnected;
    this->WatchValueTree(0, Controller::kValueTree1Update);
    // this->WatchValueTree(1, Controller::kValueTree2Update);
 
 }
 
-void IpcServerConnection::connectionLost()
+void RpcServerConnection::connectionLost()
 {
-   DBG("IpcServerConnection::connectionLost()");
+   DBG("RpcServerConnection::connectionLost()");
    MessageManagerLock mmLock;
-   fConnected = IpcServerConnection::kDisconnected;
+   fConnected = RpcServerConnection::kDisconnected;
    fController->removeChangeListener(this);
    // stop listening to any ValueTrees...
    fTreeListeners.clear();
    //delete this;
 }
 
-void IpcServerConnection::changeListenerCallback(ChangeBroadcaster* source)
+void RpcServerConnection::changeListenerCallback(ChangeBroadcaster* source)
 {
-   if (IpcServerConnection::kConnected == fConnected)
+   if (RpcServerConnection::kConnected == fConnected)
    {
       DBG("TICK");
-      IpcMessage notify(Controller::kTimerAlert, 0);
-      this->SendIpcMessage(notify);
+      RpcMessage notify(Controller::kTimerAlert, 0);
+      this->SendRpcMessage(notify);
    }
 
 }
 
-void IpcServerConnection::SendIpcMessage(const IpcMessage& msg)
+void RpcServerConnection::SendRpcMessage(const RpcMessage& msg)
 {
    const ScopedLock mutex(fLock);
    this->sendMessage(msg.GetMemoryBlock());
 }
 
 
-void IpcServerConnection::messageReceived(const MemoryBlock& message)
+void RpcServerConnection::messageReceived(const MemoryBlock& message)
 {
    // a received message from a client needs to be decoded and converted into a 
    // function call that results in us sending a message back over this connection.
    
-   IpcMessage ipcMessage(message);
+   RpcMessage ipcMessage(message);
 
    uint32 messageCode;
    uint32 sequence;
    ipcMessage.GetMetadata(messageCode, sequence);
    DBG("Received message code " + String(messageCode) + " sequence = " + String(sequence));
 
-   IpcMessage response(messageCode, sequence);
+   RpcMessage response(messageCode, sequence);
 
    switch (messageCode)
    {
@@ -249,7 +251,7 @@ void IpcServerConnection::messageReceived(const MemoryBlock& message)
       break;
    }
 
-   this->SendIpcMessage(response);
+   this->SendRpcMessage(response);
 
     if ((messageCode >= Controller::kValueTree1SetProp) && (messageCode < Controller::kTimerAlert))
    {
@@ -268,7 +270,7 @@ void IpcServerConnection::messageReceived(const MemoryBlock& message)
 }
 
 
- bool IpcServerConnection::WatchValueTree(int index, uint32 messageCode)
+ bool RpcServerConnection::WatchValueTree(int index, uint32 messageCode)
  {
     ValueTree tree = fController->GetTree(index);
     // bool retval = fController->GetTree(index, tree);

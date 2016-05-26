@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    IpcServer.h
+    RpcServer.h
     Created: 29 Jan 2016 4:43:02pm
     Author:  Brett Porter
 
@@ -13,19 +13,19 @@
 
 #include "Controller.h"
 
-class IpcMessage;
-class IpcServerConnection;
+class RpcMessage;
+class RpcServerConnection;
 
-class IpcServer : public InterprocessConnectionServer
+class RpcServer : public InterprocessConnectionServer
                 , public Timer
 {
 public: 
-   IpcServer(ServerController* controller);
+   RpcServer(ServerController* controller);
 
-   ~IpcServer();
+   ~RpcServer();
 
    /**
-    * Will actually return an instance of IpcServerConnection (below)
+    * Will actually return an instance of RpcServerConnection (below)
     * @return [pointer to server connection]
     */
    InterprocessConnection* createConnectionObject();
@@ -40,7 +40,7 @@ public:
 
 private:
    ScopedPointer<ServerController> fController;
-   OwnedArray<IpcServerConnection> fConnections;
+   OwnedArray<RpcServerConnection> fConnections;
 
 };
 
@@ -49,13 +49,13 @@ private:
 // forward ref
 class ValueTreeSyncServer;
 
-class IpcServerConnection : public InterprocessConnection
+class RpcServerConnection : public InterprocessConnection
                           , public ChangeListener
 {
 public:
-   IpcServerConnection(ServerController* controller);
+   RpcServerConnection(ServerController* controller);
 
-   ~IpcServerConnection();
+   ~RpcServerConnection();
 
    enum ConnectionState
    {
@@ -72,7 +72,7 @@ public:
 
    void changeListenerCallback(ChangeBroadcaster* source) override;
 
-   void SendIpcMessage(const IpcMessage& msg);
+   void SendRpcMessage(const RpcMessage& msg);
 
    /**
     * ValueTree-related functions:

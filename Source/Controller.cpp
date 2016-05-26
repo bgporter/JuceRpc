@@ -10,7 +10,7 @@
 
 #include "Controller.h"
 
-#include "IpcMessage.h"
+#include "RpcMessage.h"
 
 
 
@@ -57,20 +57,20 @@ void NullSynchronizer::stateChanged(const void* change, size_t size)
 }
 
 
-ClientController::ClientController(IpcClient* ipc)
-:  fIpc(ipc)
+ClientController::ClientController(RpcClient* ipc)
+:  fRpc(ipc)
 ,  fSync(fTree1)
 {
    #if 0
    fLogger = FileLogger::createDateStampedLogger(
-      "IpcTest",
+      "RpcTest",
       "Client_",
       ".txt",
       "*** CLIENT ***");
    #endif
 
 
-   fIpc->SetController(this);
+   fRpc->SetController(this);
 
 
    //fTree1.setProperty("test", 1, nullptr);
@@ -78,17 +78,17 @@ ClientController::ClientController(IpcClient* ipc)
 
 ClientController::~ClientController()
 {
-   fIpc->disconnect();
+   fRpc->disconnect();
 }
 
 bool ClientController::ConnectToServer(const String& hostName, int portNumber, int msTimeout)
 {
-   return fIpc->connectToSocket(hostName, portNumber, msTimeout);
+   return fRpc->connectToSocket(hostName, portNumber, msTimeout);
 }
 
 void ClientController::HandleReceivedMessage(const MemoryBlock& message)
 {
-   IpcMessage ipc(message);
+   RpcMessage ipc(message);
 
    uint32 code;
    uint32 sequence;
@@ -156,8 +156,8 @@ void ClientController::HandleReceivedMessage(const MemoryBlock& message)
 
 void ClientController::VoidFn()
 {
-   IpcMessage msg(Controller::kVoidFn);
-   IpcMessage response;
+   RpcMessage msg(Controller::kVoidFn);
+   RpcMessage response;
 
    if (this->CallFunction(msg, response))
    {
@@ -171,8 +171,8 @@ void ClientController::VoidFn()
 
 int ClientController::IntFn(int val)
 {
-   IpcMessage msg(Controller::kIntFn);
-   IpcMessage response;
+   RpcMessage msg(Controller::kIntFn);
+   RpcMessage response;
 
    int retval = 0;
    msg.AppendData(val);
@@ -191,8 +191,8 @@ int ClientController::IntFn(int val)
 
 String ClientController::StringFn(const String& inString)
 {
-   IpcMessage msg(Controller::kStringFn);
-   IpcMessage response;
+   RpcMessage msg(Controller::kStringFn);
+   RpcMessage response;
 
    String retval;
    msg.AppendString(inString);
@@ -208,8 +208,8 @@ String ClientController::StringFn(const String& inString)
    return retval;
 }  
 
-bool ClientController::CallFunction(IpcMessage& call, 
-                                    IpcMessage& response)
+bool ClientController::CallFunction(RpcMessage& call, 
+                                    RpcMessage& response)
 {
    bool retval = false;
    uint32 messageCode;
@@ -221,7 +221,7 @@ bool ClientController::CallFunction(IpcMessage& call,
    PendingCall pc(sequence);
    fPending.Append(&pc);
 
-   if (fIpc->sendMessage(call.GetMemoryBlock()))
+   if (fRpc->sendMessage(call.GetMemoryBlock()))
    {
       // wait for a response
       if (pc.Wait(50000))

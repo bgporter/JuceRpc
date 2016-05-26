@@ -13,8 +13,8 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-#include "IpcClient.h"
-#include "IpcMessage.h"
+#include "RpcClient.h"
+#include "RpcMessage.h"
 #include "PendingCalls.h"
 
 /**
@@ -104,13 +104,13 @@ private:
 };
 
 // forward declaration...
-class IpcMessage;
+class RpcMessage;
 
 class ClientController: public Controller
                       // , public ChangeBroadcaster
 {
 public:
-  ClientController(IpcClient* ipc);
+  ClientController(RpcClient* ipc);
 
   ~ClientController();
 
@@ -153,10 +153,10 @@ public:
 
 
    template <typename T>
-   void SetTreeProperty(uint32 messageCode, const String& path, IpcMessage::DataType type, T val)
+   void SetTreeProperty(uint32 messageCode, const String& path, RpcMessage::DataType type, T val)
    {
-      IpcMessage msg(messageCode);
-      IpcMessage response;
+      RpcMessage msg(messageCode);
+      RpcMessage response;
 
       msg.SetTreeProperty<T>(path, type, val);
       if (this->CallFunction(msg, response))
@@ -172,20 +172,20 @@ private:
 
   /**
    * Perform a function call across the socket connection. 
-   * @param  call     Populated IpcMessage object containing message sequence, 
+   * @param  call     Populated RpcMessage object containing message sequence, 
    *                  function code, and optional block of parameter data
    * @param  response IcpMessage object that will be populated on 
    *                  exit with the contents of the response from the server
    * @return          True if the call completed successfully. False if the
    *                  server timed out or there was some other error.
    */
-  bool CallFunction(IpcMessage& call, IpcMessage& response);
+  bool CallFunction(RpcMessage& call, RpcMessage& response);
 
   bool UpdateValueTree(int index, const void* data, size_t size);
 
 private:
 
-  ScopedPointer<IpcClient> fIpc;
+  ScopedPointer<RpcClient> fRpc;
   PendingCallList fPending;
 
 

@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    IpcMessage.h
+    RpcMessage.h
     Created: 1 Feb 2016 11:06:54am
     Author:  Brett Porter
 
@@ -15,7 +15,7 @@
 
 
 /**
- * @class IpcMessage
+ * @class RpcMessage
  *
  * Class to hold function call data and useful metadata:
  * - an integer code indicating the function call associated with this message.
@@ -31,7 +31,7 @@
  * and return as if this had been a synchronous in-process function call.
  */
 
-class IpcMessage
+class RpcMessage
 {
 public:
    enum OffsetType
@@ -55,17 +55,17 @@ public:
    };
 
    /**
-    * Create an empty IpcMessage object.
+    * Create an empty RpcMessage object.
     */
-   IpcMessage(uint32 code=0, uint32 sequence=kUseNextSequence);
+   RpcMessage(uint32 code=0, uint32 sequence=kUseNextSequence);
 
    /**
     * Initialize with an existing MemoryBlock object, which we must be in our
     * messagecode + data format. Used when parsing received messages.
     */
-   IpcMessage(const MemoryBlock& message);
+   RpcMessage(const MemoryBlock& message);
 
-   ~IpcMessage();
+   ~RpcMessage();
 
 
    const MemoryBlock& GetMemoryBlock() const
@@ -146,7 +146,7 @@ public:
    void SetTreeProperty(const String& path, DataType type, T val)
    {
 
-      jassert(IpcMessage::kString != type);
+      jassert(RpcMessage::kString != type);
       this->AppendString(path);
       this->AppendData<int>(type);
       this->AppendData<T>(val);
@@ -218,7 +218,7 @@ private:
 
 /*
 template <>
-void IpcMessage::SetTreeProperty<String>(const String& path, DataType type, String val)
+void RpcMessage::SetTreeProperty<String>(const String& path, DataType type, String val)
 {
 
 }
