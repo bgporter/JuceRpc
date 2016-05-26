@@ -131,7 +131,6 @@ IpcServerConnection::IpcServerConnection(ServerController* controller)
   DBG("IpcServerConnection created." );
   MessageManagerLock mmLock;
   fController->addChangeListener(this);
-
 }
 
 IpcServerConnection::~IpcServerConnection()
