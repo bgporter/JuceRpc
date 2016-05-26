@@ -208,7 +208,8 @@ String ClientController::StringFn(const String& inString)
    return retval;
 }  
 
-bool ClientController::CallFunction(IpcMessage& call, IpcMessage& response)
+bool ClientController::CallFunction(IpcMessage& call, 
+                                    IpcMessage& response)
 {
    bool retval = false;
    uint32 messageCode;
@@ -216,6 +217,7 @@ bool ClientController::CallFunction(IpcMessage& call, IpcMessage& response)
 
    call.GetMetadata(messageCode, sequence);
 
+   // Remember which call we're waiting for. 
    PendingCall pc(sequence);
    fPending.Append(&pc);
 
@@ -224,8 +226,8 @@ bool ClientController::CallFunction(IpcMessage& call, IpcMessage& response)
       // wait for a response
       if (pc.Wait(50000))
       {
-         // if we get here, the pending call object has a memoryBlock that we can use to 
-         // populate our response.
+         // if we get here, the pending call object has a memoryBlock 
+         // that we can use to populate our response.
          response.FromMemoryBlock(pc.GetMemoryBlock());
          // advance past the header bits...
          response.GetMetadata(messageCode, sequence);
@@ -242,6 +244,7 @@ bool ClientController::CallFunction(IpcMessage& call, IpcMessage& response)
       DBG("ERROR sending call message.");
    }
 
+   // remove the pending call object from the list
    fPending.Remove(&pc);
 
    return retval;
@@ -310,22 +313,19 @@ void ServerController::timerCallback()
    {
       var lastVal = fTree1.getProperty("count");
       int newVal = (int) lastVal + 1;
-      //fTree1.setProperty("count", newVal, nullptr);
-      //fTree1.setProperty("even", (0 == newVal % 2), nullptr);
+
       ValueTree sub = fTree1.getChildWithName("sub");
       Random r;
-      sub.setProperty("text", String("*** ") + String(r.nextInt()) + " ***", nullptr);
+      sub.setProperty("text", String("*** ") + String(r.nextInt()) + \
+                      " ***", nullptr);
 
       fTree1.setProperty("count", newVal, nullptr);
       fTree1.setProperty("even", (0 == newVal % 2), nullptr);
 
       DBG(fTree1.toXmlString());
    }
-   if (0 == fTimerCount % 17)
-   {
-
-   }
-   
+  
+   // Notify listeners that we've changed. 
    this->sendChangeMessage();
 }
 
