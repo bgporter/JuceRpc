@@ -217,6 +217,10 @@ bool ClientController::CallFunction(RpcMessage& call,
    PendingCall pc(sequence);
    fPending.Append(&pc);
 
+   if (!fRpc->IsConnected())
+   {
+      throw RpcException(Controller::kConnectionError);
+   }
    if (fRpc->sendMessage(call.GetMemoryBlock()))
    {
       // wait for a response
@@ -226,14 +230,19 @@ bool ClientController::CallFunction(RpcMessage& call,
          // that we can use to populate our response.
          response.FromMemoryBlock(pc.GetMemoryBlock());
          // advance past the header bits...
-         response.GetMetadata(messageCode, sequence);
+         uint32 responseCode;
+         response.GetMetadata(responseCode, sequence);
+         if (responseCode != messageCode)
+         {
+            throw RpcException(responseCode);
+         }
          retval = true;
 
       }
       else
       {  
          DBG("ERROR (timeout?) calling function code = " + String(messageCode));
-         throw RpcException<Controller::kTimeout>();
+         throw RpcException(Controller::kTimeout);
       }
    }
    else

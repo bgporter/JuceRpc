@@ -14,6 +14,7 @@
 RpcClient::RpcClient()
 :  InterprocessConnection(false, 0xf2b49e2c)
 ,  fController(nullptr)
+,  fIsConnected(false)
 {
 
 }
@@ -32,11 +33,13 @@ void RpcClient::SetController(ClientController* controller)
 void RpcClient::connectionMade()
 {
    DBG("RpcClient::connectionMade()");
+   fIsConnected = true;
 }
 
 void RpcClient::connectionLost()
 {
    DBG("RpcClient::connectionLost()");
+   fIsConnected = true;
 }
 
 void RpcClient::messageReceived(const MemoryBlock& message)

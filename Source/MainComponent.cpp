@@ -49,9 +49,22 @@ void MainContentComponent::changeListenerCallback(ChangeBroadcaster* src)
             String newText = fController->StringFn("from server");
             this->SetText(newText);
         }
-        catch (const RpcException<Controller::kTimeout>& e)
+        catch (const RpcException& e)
         {
-            this->SetText("TIMEOUT error");
+            switch (e.GetCode())
+            {
+                case Controller::kTimeout:
+                {
+                    this->SetText("TIMEOUT error");
+                }
+                break;
+                    
+                default:
+                {
+                    this->SetText("Exception code = " + String(e.GetCode()));
+                }
+                break;
+            }
         }
     }
 

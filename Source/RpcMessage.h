@@ -106,7 +106,7 @@ public:
     * process boundaries. 
     * @param val the `var` object to append. 
     */
-   void AppendVar(var val);
+   void AppendVar(const var& val);
     
    void AppendString(const String& s);
 

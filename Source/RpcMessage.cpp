@@ -99,7 +99,7 @@ void RpcMessage::AppendData(const void* data, size_t numBytes)
 
 
 
-void RpcMessage::AppendVar(var value)
+void RpcMessage::AppendVar(const var& value)
 {
    if (value.isInt())
    {

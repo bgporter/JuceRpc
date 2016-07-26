@@ -6,6 +6,7 @@
 
 #include "RpcTest.h"
 
+#include "RpcException.h"
 #include "RpcServer.h"
 #include "RpcMessage.h"
 
@@ -190,77 +191,95 @@ void RpcServerConnection::messageReceived(const MemoryBlock& message)
 
    RpcMessage response(messageCode, sequence);
 
-   switch (messageCode)
+
+   try
    {
-      case Controller::kVoidFn:
-      {
-         fController->VoidFn();
-      }
-      break;
 
-      case Controller::kIntFn:
-      {
-         int arg = ipcMessage.GetData<int>();
-         DBG("IntFn arg = " + String(arg));
-         int retval = fController->IntFn(arg);
-         DBG("IntFn retval = " + String(retval));
+     switch (messageCode)
+     {
+        case Controller::kVoidFn:
+        {
+           fController->VoidFn();
+        }
+        break;
 
-         response.AppendData(retval);
-      }
-      break;
+        case Controller::kIntFn:
+        {
+           int arg = ipcMessage.GetData<int>();
+           DBG("IntFn arg = " + String(arg));
+           int retval = fController->IntFn(arg);
+           DBG("IntFn retval = " + String(retval));
 
-      case Controller::kStringFn:
-      {
-        String arg = ipcMessage.GetString();
-        DBG("StringFn arg = " + arg);
-        String retval = fController->StringFn(arg);
-        DBG("StringFn retval = " + retval);
+           response.AppendData(retval);
+        }
+        break;
 
-        response.AppendString(retval);
+        case Controller::kStringFn:
+        {
+          String arg = ipcMessage.GetString();
+          DBG("StringFn arg = " + arg);
+          String retval = fController->StringFn(arg);
+          DBG("StringFn retval = " + retval);
 
-      }
-      break;
+          response.AppendString(retval);
 
-      case Controller::kValueTree1Update:
-      case Controller::kValueTree2Update:
-      {
-          // client is explicitly requesting the full tree update.
-          for (int i = 0; i < fTreeListeners.size(); ++i)
-          {
-             ValueTreeSyncServer* vts = fTreeListeners.getUnchecked(i);
-             if (messageCode == vts->GetMessageCode())
-             {
-                // we found the sync handler for that tree. Get a full sync:
-                vts->sendFullSyncCallback();
-                // return immediately -- the listener code will send back the response.
-                return;
-             }
-          }
+        }
+        break;
 
-      }
-      break;
+        case Controller::kValueTree1Update:
+        case Controller::kValueTree2Update:
+        {
+            // client is explicitly requesting the full tree update.
+            for (int i = 0; i < fTreeListeners.size(); ++i)
+            {
+               ValueTreeSyncServer* vts = fTreeListeners.getUnchecked(i);
+               if (messageCode == vts->GetMessageCode())
+               {
+                  // we found the sync handler for that tree. Get a full sync:
+                  vts->sendFullSyncCallback();
+                  // return immediately -- the listener code will send back the response.
+                  return;
+               }
+            }
 
-      default:
-      {
-         DBG("Received unknown message code" + String(messageCode));
-      }
-      break;
+        }
+        break;
+
+        default:
+        {
+           DBG("Received unknown message code" + String(messageCode));
+           RpcException e(Controller::kUnknownMethodError);
+           e.AppendExtraData(var(static_cast<int>(messageCode)));
+
+           throw e;
+        }
+        break;
+     }
+
+     this->SendRpcMessage(response);
+
+      if ((messageCode >= Controller::kValueTree1SetProp) && (messageCode < Controller::kTimerAlert))
+     {
+        // value tree changes should take place after we've sent the (void) response back to the 
+        // client.
+        switch (messageCode)
+        {
+            case Controller::kValueTree2SetProp:
+            {
+                ValueTree tree = fController->GetTree(1);
+                ipcMessage.ApplyTreeProperty(tree);
+            }  
+        } 
+     }
    }
-
-   this->SendRpcMessage(response);
-
-    if ((messageCode >= Controller::kValueTree1SetProp) && (messageCode < Controller::kTimerAlert))
+   catch (const RpcException& e)
    {
-      // value tree changes should take place after we've sent the (void) response back to the 
-      // client.
-      switch (messageCode)
+      RpcMessage exception(e.GetCode(), sequence);
+       for (int i = 0; i < e.GetExtraDataSize(); ++i)
       {
-          case Controller::kValueTree2SetProp:
-          {
-              ValueTree tree = fController->GetTree(1);
-              ipcMessage.ApplyTreeProperty(tree);
-          }  
-      } 
+         exception.AppendVar(e.GetExtraData(i)); 
+      }
+      this->SendRpcMessage(exception);
    }
 
 }

@@ -27,10 +27,12 @@ public:
 
    void messageReceived(const MemoryBlock& message) override;
 
+   bool IsConnected() const { return fIsConnected; };
 
 private:
 
    ClientController* fController;
+   bool fIsConnected;
 
 };
 
