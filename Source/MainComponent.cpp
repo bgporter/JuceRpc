@@ -5,7 +5,7 @@
 
 
 #include "MainComponent.h"
-
+#include "RpcException.h"
 
 //==============================================================================
 MainContentComponent::MainContentComponent()
@@ -44,8 +44,15 @@ void MainContentComponent::changeListenerCallback(ChangeBroadcaster* src)
     if (client)
     {
         DBG("Calling StringFn");
-        String newText = fController->StringFn("from server");
-        this->SetText(newText);
+        try
+        {
+            String newText = fController->StringFn("from server");
+            this->SetText(newText);
+        }
+        catch (const RpcException<Controller::kTimeout>& e)
+        {
+            this->SetText("TIMEOUT error");
+        }
     }
 
     for (int i = 0; i < 2; ++i)
