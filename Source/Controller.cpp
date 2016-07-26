@@ -5,7 +5,7 @@
 
 
 #include "Controller.h"
-
+#include "RpcException.h"
 #include "RpcMessage.h"
 
 
@@ -233,6 +233,7 @@ bool ClientController::CallFunction(RpcMessage& call,
       else
       {  
          DBG("ERROR (timeout?) calling function code = " + String(messageCode));
+         throw RpcException<Controller::kTimeout>();
       }
    }
    else

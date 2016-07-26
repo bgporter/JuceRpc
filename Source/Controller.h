@@ -40,7 +40,17 @@ public:
        */
       kTimerAlert = 10000,
       kValueTree1Update,
-      kValueTree2Update
+      kValueTree2Update,
+
+      /**
+       * A range of codes that represent exceptions across the RPC link.
+       */
+      kTimeout = 20000, /** the method call timed out before completion */
+      kMethodError, /** no such method on the server side */
+      kParameterError, /** an error in one of the passed parameters */
+      kConnectionError, /** there's no connection */
+
+
    };
 
    Controller();
