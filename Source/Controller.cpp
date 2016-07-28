@@ -234,7 +234,21 @@ bool ClientController::CallFunction(RpcMessage& call,
          response.GetMetadata(responseCode, sequence);
          if (responseCode != messageCode)
          {
-            throw RpcException(responseCode);
+            RpcException e(responseCode);
+            // look for 1 or more var values in the message, and append any
+            // non-void vars to the exception object. A void var acts as a 
+            // terminator, and there should always be at least the terminator 
+            // included in an exception message.
+            while (true)
+            {
+               var v = response.GetVar();
+               if (v.isVoid())
+               {
+                  break;
+               }
+               e.AppendExtraData(v);
+            }
+            throw e;
          }
          retval = true;
 
