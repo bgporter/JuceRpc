@@ -185,6 +185,21 @@ int ClientController::IntFn(int val)
 }
 
 
+void ClientController::UnknownFn()
+{
+   RpcMessage msg(Controller::kUnknownFn);
+   RpcMessage response;
+
+   if (this->CallFunction(msg, response))
+   {
+      // nothing to do.
+   }
+   else
+   {
+      DBG("ERROR calling UnknownFn();");
+   }
+}
+
 String ClientController::StringFn(const String& inString)
 {
    RpcMessage msg(Controller::kStringFn);
@@ -215,7 +230,9 @@ bool ClientController::CallFunction(RpcMessage& call,
 
    // Remember which call we're waiting for. 
    PendingCall pc(sequence);
-   fPending.Append(&pc);
+   // fPending.Append(&pc);
+
+   ScopedPendingCall spc(fPending, &pc);
 
    if (!fRpc->IsConnected())
    {
@@ -273,7 +290,7 @@ bool ClientController::CallFunction(RpcMessage& call,
    }
 
    // remove the pending call object from the list
-   fPending.Remove(&pc);
+   //fPending.Remove(&pc);
 
    return retval;
 }
@@ -322,6 +339,10 @@ void ServerController::VoidFn()
 int ServerController::IntFn(int val)
 {
    DBG("Server: IntFn()");
+   if (val < 0)
+   {
+      throw RpcException(Controller::kParameterError);
+   }
    return val * 2;
 }
 
