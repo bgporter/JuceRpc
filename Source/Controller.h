@@ -27,6 +27,7 @@ public:
       kVoidFn = 1,
       kIntFn,
       kStringFn,
+      kUnknownFn, // only implemented on client side, for testing exception.
       /**
        * A range of codes to alter value trees
        */
@@ -150,6 +151,12 @@ public:
     */
    int IntFn(int val) override;
 
+
+   /**
+    * Test function, only implemented on client side. Calling this should
+    * raise an exception of type Controller::kUnknownMethodError
+    */
+   void UnknownFn();
 
    /**
     * fn taking/returning strings.
