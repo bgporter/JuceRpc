@@ -275,10 +275,18 @@ void RpcServerConnection::messageReceived(const MemoryBlock& message)
    catch (const RpcException& e)
    {
       RpcMessage exception(e.GetCode(), sequence);
-       for (int i = 0; i < e.GetExtraDataSize(); ++i)
+      int extraData = e.GetExtraDataSize();
+      if (extraData)
       {
-         exception.AppendVar(e.GetExtraData(i)); 
+         for (int i = 0; i < extraData; ++i)
+         {
+            exception.AppendVar(e.GetExtraData(i)); 
+         }
       }
+      // append a void var as a terminator of the extra data.
+      var voidVar;
+      exception.AppendVar(voidVar);
+
       this->SendRpcMessage(exception);
    }
 
