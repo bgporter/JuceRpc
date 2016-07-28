@@ -9,6 +9,7 @@
 
 #include "Controller.h"
 #include "RpcClient.h"
+#include "RpcException.h"
 #include "RpcServer.h"
 #include "RpcTest.h"
 
@@ -86,6 +87,30 @@ public:
             
             int intVal = fClientController->IntFn(200);
             DBG("IntFn returned " + String(intVal));
+
+            try
+            {
+                fClientController->IntFn(-1);
+            }
+            catch (const RpcException& e)
+            {
+                DBG("Got (expected) exception calling IntFn(-1);");
+                jassert(Controller::kParameterError == e.GetCode());
+            }
+            catch (...)
+            {
+                DBG("Shouldn't get here!");
+            }
+
+            try
+            {
+                fClientController->UnknownFn();
+            }
+            catch (const RpcException& e)
+            {
+                DBG("Got (expected) exception calling UnknownFn());");
+                jassert(Controller::kUnknownMethodError == e.GetCode());
+            }
            
             
         }
