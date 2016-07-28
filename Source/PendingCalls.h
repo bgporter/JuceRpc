@@ -115,5 +115,18 @@ private:
 };
 
 
+class ScopedPendingCall
+{
+public:
+  ScopedPendingCall(PendingCallList& list, PendingCall* call);
+  ~ScopedPendingCall();
+
+private:
+  PendingCallList& fList;
+  PendingCall* fCall;
+
+};
+
+
 
 #endif  // PENDINGCALLS_H_INCLUDED

@@ -116,4 +116,19 @@ public:
 
 };
 
+
+ScopedPendingCall::ScopedPendingCall(PendingCallList& list, PendingCall* call)
+:  fList(list)
+,  fCall(call)
+{
+   fList.Append(call);
+}
+
+
+ScopedPendingCall::~ScopedPendingCall()
+{
+   fList.Remove(fCall);
+}
+
+
 static PendingCallsTest tests;
