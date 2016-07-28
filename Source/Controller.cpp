@@ -232,9 +232,15 @@ bool ClientController::CallFunction(RpcMessage& call,
          // advance past the header bits...
          uint32 responseCode;
          response.GetMetadata(responseCode, sequence);
+
+         // If the message code of the response is different from the code 
+         // we sent but the sequence numbers match, the server is sending
+         // us an exception that we need to re-constitute back into an RpcException 
+         // object and then throw it. 
          if (responseCode != messageCode)
          {
             RpcException e(responseCode);
+
             // look for 1 or more var values in the message, and append any
             // non-void vars to the exception object. A void var acts as a 
             // terminator, and there should always be at least the terminator 
@@ -244,6 +250,8 @@ bool ClientController::CallFunction(RpcMessage& call,
                var v = response.GetVar();
                if (v.isVoid())
                {
+                  // a void var inside the message is the terminator -- 
+                  // exit the loop.
                   break;
                }
                e.AppendExtraData(v);
