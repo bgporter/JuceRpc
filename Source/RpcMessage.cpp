@@ -125,8 +125,12 @@ void RpcMessage::AppendVar(const var& value)
    else if (value.isString())
    {
       this->AppendData<int>(kString);
-       String s = value;
+      String s = value;
       this->AppendString(s);
+   }
+   else if (value.isVoid())
+   {
+      this->AppendData<int>(kVoid);
    }
    else 
    {
@@ -198,8 +202,14 @@ var RpcMessage::GetVar(size_t offset)
       }
       break;
 
+      case kVoid:
+      {
+         // empty on purpose; retval is already a void var.
+      }
+
       default:
       {
+         // a place to add a breakpoint.
          isValid = false;
       }
    }

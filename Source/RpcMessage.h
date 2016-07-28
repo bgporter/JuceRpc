@@ -47,7 +47,8 @@ public:
       kInt64,
       kBool,
       kDouble,
-      kString
+      kString,
+      kVoid
    };
 
    /**
