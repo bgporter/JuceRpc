@@ -106,6 +106,9 @@ void ClientController::HandleReceivedMessage(const MemoryBlock& message)
       else 
       {
          DBG("ERROR: Unexpected reply to call sequence #" + String(sequence));
+         RpcException e(Controller::kMessageSequenceError);
+         e.AppendExtraData(var(static_cast<int>(sequence)));
+         throw e;
       }
    }
    else
@@ -228,16 +231,17 @@ bool ClientController::CallFunction(RpcMessage& call,
 
    call.GetMetadata(messageCode, sequence);
 
-   // Remember which call we're waiting for. 
-   PendingCall pc(sequence);
-   // fPending.Append(&pc);
-
-   ScopedPendingCall spc(fPending, &pc);
-
    if (!fRpc->IsConnected())
    {
       throw RpcException(Controller::kConnectionError);
    }
+
+   // Remember which call we're waiting for. 
+   PendingCall pc(sequence);
+   // ...the ScopedPendingCall helper makes sure that we 
+   // are exception-safe. 
+   const ScopedPendingCall spc(fPending, &pc);
+
    if (fRpc->sendMessage(call.GetMemoryBlock()))
    {
       // wait for a response

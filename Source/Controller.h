@@ -51,6 +51,7 @@ public:
       kUnknownMethodError,  /** no such method on the server side */
       kParameterError,      /** an error in one of the passed parameters */
       kConnectionError,     /** there's no connection */
+      kMessageSequenceError,  /** Client received a response to a message that wasn't sent. */
 
 
    };
